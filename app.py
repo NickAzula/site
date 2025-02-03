@@ -87,6 +87,14 @@ def home():
 def registration_page():
     return render_template('registration.html')
 
+@app.route('/nft')
+def nft_page():
+    return render_template('nft.html')
+
+@app.route('/azula_nft')
+def azula_nft_page():
+    return render_template('azula_nft.html')
+
 @app.route('/logout')
 @login_required
 def logout():

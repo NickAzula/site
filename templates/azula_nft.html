@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Подключение CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/pageNFT.css') }}">
+
+    <!-- Подключение Three.js для работы с 3D-графикой -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r121/three.min.js"></script>
+
+    <!-- Подключение библиотеки dat.GUI для UI-контролов -->
+    <script defer src="https://cdnjs.cloudflare.com/ajax/libs/dat-gui/0.7.7/dat.gui.min.js"></script>
+
+    <!-- Основной JavaScript-код -->
+    <script defer type="module" src="{{ url_for('static', filename='js/pageNFT_azula.js') }}"></script>
+    <title>Document</title>
+</head>
+<body>
+    <div id="world"></div>
+</body>
+</html>

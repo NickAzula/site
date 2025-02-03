@@ -1,0 +1,19 @@
+/* Copyright (c) 2024 by Yugam (https://codepen.io/pizza3/pen/pobevYW) */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    outline: none;
+}
+
+#world {
+    width: 100%;
+    height: 100vh;
+    background: black;
+}
+
+canvas {
+    left: calc(50% - 325px);
+    position: absolute;
+}
