@@ -1,0 +1,455 @@
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NickAzula Main</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+
+    body {
+      font-family: 'Cinzel', serif;
+      background-color: black;
+      color: white;
+      margin: 0;
+      display: flex;
+      height: 100vh;
+      overflow: hidden;
+    }
+    
+    /* Кнопки социальных сетей */
+    /* Кнопки соцсетей position: fixed;*/
+
+.top-controls {
+  position: absolute;
+  top: 15px;
+  left: 20px;
+  z-index: 999;
+  display: flex;
+  flex-direction: row; /* В строку */
+  align-items: center; /* Выравнивание */
+  gap: 35px;
+  flex-wrap: nowrap; /* Запрещает перенос */
+}
+
+.top-controls a {
+  display: inline-block; /* Убедись, что ссылки не блочные */
+}
+
+.social-button {
+  width: 40px;
+  height: 40px;
+  border-radius: 100%;
+  cursor: pointer;
+  display: inline-block;
+}
+
+    /*
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    background: linear-gradient(to right, #ff4500, #ff8c00);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
+    z-index: 10000;
+    */
+
+    .toggle-theme-button {
+      position: absolute;
+      right: 100px;
+      top: 20px;
+      padding: 10px;
+      background: linear-gradient(to right, #ff4500, #ff8c00);
+      color: white;
+      font-size: 12px;
+      font-weight: bold;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      box-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
+      z-index: 10000;
+    }
+
+
+    .sidebar {
+      width: 250px;
+      background: rgba(30, 30, 30, 0.9);
+      padding: 20px;
+      box-shadow: 5px 0 15px rgba(255, 69, 0, 0.8);
+    }
+
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .sidebar-header img {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .fire-text {
+      color: #fff;
+      font-size: 24px;
+      text-transform: uppercase;
+      text-shadow: 0 0 5px #ff4500, 0 0 10px #ff8c00, 0 0 15px #ff4500, 0 0 20px #ff8c00;
+      animation: burnFlicker 1.5s infinite linear;
+    }
+
+    @keyframes burnFlicker {
+      0% { text-shadow: 0 0 5px #ff4500, 0 0 10px #ff8c00, 0 0 15px #ff4500, 0 0 20px #ff8c00; }
+      50% { text-shadow: 0 0 8px #ff8c00, 0 0 16px #ff4500, 0 0 25px #ff8c00, 0 0 30px #ff4500; }
+      100% { text-shadow: 0 0 5px #ff4500, 0 0 10px #ff8c00, 0 0 15px #ff4500, 0 0 20px #ff8c00; }
+    }
+
+    .sidebar h2 {
+      color: #ff8c00;
+      text-transform: uppercase;
+      border-bottom: 2px solid #ff4500;
+      padding-bottom: 5px;
+      margin-bottom: 15px;
+    }
+
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .sidebar li {
+      margin: 10px 0;
+    }
+
+    .sidebar a {
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+      transition: 0.3s;
+      overflow-y: auto;
+    }
+
+    .sidebar a:hover {
+      color: #ff4500;
+    }
+
+    .content {
+      flex: 1;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      position: relative;
+      height: auto;
+            min-height: 100vh;
+      overflow-y: auto;
+    }
+
+    .fire-border {
+      padding: 20px;
+      border-radius: 15px;
+      box-shadow: 0 0 30px rgba(255, 69, 0, 0.8);
+      animation: flicker 0.6s infinite alternate;
+    }
+
+    /* Контейнеры с "огненным" обрамлением */
+    .fire-border1 {
+      position: relative;
+      padding: 20px;
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 0 30px rgba(255, 69, 0, 0.8);
+      animation: flicker 0.6s infinite alternate;
+    }
+
+    .text-header {
+      width: 100%;
+      height: 60px;
+      text-align: center;
+      margin-bottom: 15px;
+    }
+
+    .button {
+      display: inline-block;
+      padding: 10px 20px;
+      background: linear-gradient(to right, #ff4500, #ff8c00);
+      color: white;
+      font-size: 18px;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      text-decoration: none;
+      text-align: center;
+      cursor: pointer;
+      box-shadow: 0 0 10px rgba(255, 69, 0, 0.9);
+      animation: flicker 0.2s infinite alternate;
+    }
+
+    .button:hover {
+      background: linear-gradient(to right, #ff8c00, #ff4500);
+    }
+
+
+    .text-main {
+      width: 100%;
+      height: auto;
+      color: white;
+      border: 2px solid rgba(255, 69, 0, 0.8);
+      border-radius: 20px;
+      box-shadow: 0 0 20px rgba(255, 69, 0, 0.8);
+      font-size: 20px;
+      line-height: 1.8;
+      text-align: justify;
+      background: black;
+      padding: 18px;
+      overflow-y: auto;
+    }
+
+
+
+    @keyframes flicker {
+      0% { box-shadow: 0 0 40px rgba(255, 69, 0, 0.9); }
+      100% { box-shadow: 0 0 60px rgba(255, 140, 0, 0.9); }
+    }
+  </style>
+</head>
+<body>
+  <div class="sidebar">
+    <div class="sidebar-header">
+      <img src="{{ url_for('static', filename='images/azula.png') }}" alt="Logo">
+      <span class="fire-text">NickAzula</span>
+    </div>
+    <h2>Home</h2>
+    <ul>
+        <li><a href="#">Start Page</a></li>
+        <li><a href="#">FAQ</a></li>
+        <li><a href="#">AI</a></li>
+        <li><a href="#">Python</a></li>
+    </ul>
+    <h2>Trading</h2>
+    <ul>
+      <li><a href="#">ML Bots</a></li>
+      <li><a href="#">Algorithms</a></li>
+      <li><a href="#">Spot Bot</a></li>
+      <li><a href="#">HFT</a></li>
+    </ul>
+    <h2>Blockchain</h2>
+    <ul>
+      <li><a href="#">ETHER</a></li>
+      <li><a href="#">Web3</a></li>
+      <li><a href="#">Solidity</a></li>
+    </ul>
+    <h2>About Me</h2>
+    <ul>
+      <li><a href="#">Me</a></li>
+    </ul>
+  </div>
+  <div class="content fire-border">
+
+    <div class="text-header">
+    <button class="toggle-theme-button" 
+    onclick="toggleTheme()">Thema</button>
+    <!-- Кнопки соцсетей -->
+  <div class="top-controls">
+    <a href="https://t.me/nick_azula" target="_blank">
+      <img src="{{ url_for('static', filename='images/tg.png') }}" alt="" class="social-button">
+    </a>
+    <a href="https://www.instagram.com/azu_zzula/" target="_blank">
+      <img src="{{ url_for('static', filename='images/inst.jpg') }}" alt="" class="social-button">
+    </a>
+  </div>
+      </div>
+    <div class="text-main fire-border1">
+    Hellow!
+    <br>
+      В качестве основополагающей идеи нарративизма берётся идея субъективной привнесённости смысла через задание финала.
+
+В связи с этим, неважно понимание текста в классическом смысле слова. Фредрик Джеймисон считает, что нарративная процедура «творит реальность», утверждая как её относительность (то есть не имея никаких претензий на адекватность), так и свою «независимость» от полученного смысла. Бартом текст рассматривается как эхокамера, возвращающая субъекту лишь привнесённый им смысл, а повествование идёт «ради самого рассказа, а не ради прямого воздействия на действительность, то есть, в конечном счёте, вне какой-либо функции, кроме символической деятельности как таковой». Сравнивая классический труд — произведение и постмодернистский текст, Барт пишет: «произведение замкнуто, сводится к определённому означаемому… В Тексте, напротив, означаемое бесконечно откладывается на будущее».
+
+По идеям М. Постера, смысл рассказа понимается в процессе наррации, то есть «мыслится как лишённый какого бы то ни было онтологического обеспечения и возникающий в акте сугубо субъективного усилия».
+
+По оценке Й. Брокмейера и Рома Харре, нарратив является не описанием некой реальности, а «инструкцией» по определению и пониманию последней, приводя в качестве примера правила игры в теннис, которые только создают иллюзию описания процесса игры, являясь на самом деле лишь средством «вызвать игроков к существованию».
+
+Ещё одной характеристикой нарратива выступает предложенный Итало Кальвино термин leggerezza — лёгкость, которую «нарративное воображение может вдохнуть в pezantezza — тяжеловесную действительность».
+
+Основной частью рассказа и моментом появления в нём фабулы является его завершение. Нарратор (рассказчик) в первую очередь является носителем знания о финале, и только благодаря этому качеству он принципиально отличается от другого субъекта нарративного рассказа — его «героя», который, существуя в центре событий, не имеет этого знания.
+
+Такие идеи были типичны и для авторов, только предварявших постмодернистскую философию. Так, Роман Ингарден рассматривал «конец повествования» как фактор, придающий обычной хронологической последовательности событий идею, и говорил о важнейшем смысле «последней» («кульминационной») фразы текста: «Специфика выраженного данной фразой… пронизывает всё то, что перед этим было представлено… Она накладывает на него отпечаток цельности».
+
+Для принятой постмодернизмом концепции истории главной является идея значения финала для конституирования нарратива как такового. Фрэнк Кермоуд считал, что лишь существование определённого «завершения», изначально известного нарратору, создаёт некое поле тяготения, стягивающее все сюжетные векторы в общий фокус.
+
+Деррида предложил идею отсрочки (фр. différance), согласно которой становление (сдвиг) смысла осуществляется «способом оставления (в самом письме и в упорядочивании концептов) определённых лакун или пространств свободного хода, продиктованных пока ещё только предстоящей теоретической артикуляцией». Деррида рассматривает «движение означивания», при котором каждый «элемент», называемый «наличным» и стоящий «на сцене настоящего», соотносится с чем-то иным, храня в себе «отголосок, порождённый звучанием прошлого элемента», и, при этом, начинает разрушаться «вибрацией собственного отношения к элементу будущего», то есть находясь в настоящем, он может быть отнесён и к «так называемому прошлому», и к «так называемому будущему», которое является одной из сил настоящего.
+
+Так как для постмодернистского текста наличие объективного смысла не является важным, то и не предполагается понимание этого текста в герменевтическом смысле этого слова. «Повествовательная стратегия» постмодернизма рассматривается как радикальный отказ от реализма в любых его проявлениях:
+
+литературно-художественный критический реализм, так как критиковать — значит считаться с чем-то, как с объективным (а постмодернисты критиковали даже символизм, обвиняя его последователей в том, что символы и знаки являются всё же следами определённой реальности;
+традиционный философский реализм, так как, по мнению Д. Райхмана, постмодерн относится к тексту принципиально номиналистично;
+сюрреализм, так как постмодерну не нужны «зоны свободы» в личностно-субъективной эмоционально-аффективной сфере и он находит эту свободу не в феноменах детства и сновидениях (как сюрреализм), а в процедурах деконструкции и означивания текста, предполагающих произвольность его центрации и семантизации.
+По мнению Ганса Гадамера, истинная свобода реализует себя именно через всё многообразие нарративов: «всё, что является человеческим, мы должны позволить себе высказать».
+
+В данном контексте можно рассматривать и одну из сторон общей для всего постмодерна установки, иногда называемой «смерть субъекта» (и, в частности, «смерть автора»), нарратив Автора в процессе чтения заменяется нарративом Читателя, по-своему понимающего и определяющего текст. Если же последний пересказывает текст, то он, в свою очередь, становится Автором для другого Читателя, и так далее. Таким образом, нарратив является рассказом, который всегда можно рассказать по-другому.
+
+В этом контексте Й. Брокмейер и Р. Харре соотносят нарратив с феноменом дискурсивности, рассматривая его как «подвид дискурса».
+  </div>
+
+<!-- Кнопка для включения/выключения дождя -->
+<button id="rainToggle" class="rain-button">Rain ON</button>
+  <script>
+    function toggleTheme() {
+      const textMain = document.querySelector('.text-main');
+      if (textMain.style.color === 'black') {
+        textMain.style.color = 'white';
+        textMain.style.background = 'black';
+      } else {
+        textMain.style.color = 'black';
+        textMain.style.background = 'white';
+      }
+    }
+  </script>
+
+  <script>
+    class RainEffect {
+      constructor() {
+        this.isRaining = false;
+        this.drops = [];
+        this.canvas = document.createElement("canvas");
+        this.ctx = this.canvas.getContext("2d");
+        this.init();
+      }
+
+      init() {
+        // Стили canvas
+        this.canvas.style.position = "fixed";
+        this.canvas.style.top = "0";
+        this.canvas.style.left = "0";
+        this.canvas.style.width = "100vw";
+        this.canvas.style.height = "100vh";
+        this.canvas.style.pointerEvents = "none";
+        this.canvas.style.zIndex = "9999";
+        document.body.appendChild(this.canvas);
+        this.resize();
+        // Следим за ресайзом окна
+        window.addEventListener("resize", () => this.resize());
+      }
+
+      resize() {
+        // Подгоняем размеры канвы под окно
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        // Генерируем массив капель
+        this.drops = [];
+        for (let i = 0; i < 1000; i++) {
+          this.drops.push({
+            x: Math.random() * this.canvas.width,
+            y: Math.random() * this.canvas.height,
+            vx: 0.5 - Math.random() * 1,      // Горизонтальное отклонение
+            vy: Math.random() * 1 + 0.2,      // Скорость падения
+            life: 0,
+            ttl: Math.random() * 500 + 300,   // Время "жизни" капли
+            size: 2
+          });
+        }
+      }
+
+      draw() {
+        if (!this.isRaining) return;
+        // Очистим экран (чёрный фон)
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+
+        // Рисуем капли
+        this.ctx.fillStyle = "rgba(150,180,255,0.8)";
+        for (let i = 0; i < this.drops.length; i++) {
+          let drop = this.drops[i];
+
+          // Передвигаем каплю
+          drop.x += drop.vx;
+          drop.y += drop.vy;
+          drop.life++;
+          // Небольшое ускорение
+          if (drop.vy < 8) {
+            drop.vy += 0.1;
+          }
+
+          // Если вышла за границы или TTL закончился — реинициализируем
+          if (
+            drop.x > this.canvas.width ||
+            drop.x < -drop.size ||
+            drop.y > this.canvas.height + drop.size ||
+            drop.life > drop.ttl
+          ) {
+            drop.x = Math.random() * this.canvas.width;
+            drop.y = -drop.size;
+            drop.vx = 0.5 - Math.random() * 1;
+            drop.vy = Math.random() * 1 + 0.2;
+            drop.life = 0;
+            drop.ttl = Math.random() * 500 + 300;
+          }
+
+          // Отрисовка капли (2x2px)
+          this.ctx.fillRect(drop.x, drop.y, drop.size, drop.size);
+        }
+
+        requestAnimationFrame(() => this.draw());
+      }
+
+      toggleRain() {
+        this.isRaining = !this.isRaining;
+        if (this.isRaining) {
+          // Запускаем анимацию
+          requestAnimationFrame(() => this.draw());
+        } else {
+          // Очищаем канву
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+      }
+    }
+
+    // Создаём RainEffect
+    const rainEffect = new RainEffect();
+
+    // Навешиваем обработчик на кнопку
+    document.getElementById("rainToggle").addEventListener("click", function () {
+      rainEffect.toggleRain();
+      this.textContent = rainEffect.isRaining ? "Rain OFF" : "Rain ON";
+    });
+  </script>
+
+<style>
+  .rain-button {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    padding: 10px;
+    background: linear-gradient(to right, #ff4500, #ff8c00);
+    color: white;
+    border: none;
+    border-radius: 15px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: bold;
+    text-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
+    z-index: 10000;
+  }
+
+  .rain-button:hover {
+    background: linear-gradient(to right, #ff8c00, #ff4500);
+  }
+</style>
+
+
+
+
+
+
+</body>
+</html>
+

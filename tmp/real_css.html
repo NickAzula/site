@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NickAzula Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+        
+        body {
+            font-family: 'Cinzel', serif;
+            background-color: black;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .flame {
+            position: absolute;
+            width: 120%;
+            height: 40px;
+            background: linear-gradient(orange, red);
+            filter: blur(8px);
+            opacity: 0.7;
+            bottom: -15px;
+            left: -10%;
+            animation: flameEffect 1s infinite alternate ease-in-out;
+        }
+        
+        @keyframes flameEffect {
+            0% {
+                transform: scaleY(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scaleY(1.3);
+                opacity: 0.5;
+            }
+        }
+        
+        .fire-border {
+            position: relative;
+            padding: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(255, 69, 0, 0.8);
+            animation: flicker 0.1s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0% {
+                box-shadow: 0 0 40px rgba(255, 69, 0, 0.9);
+            }
+            100% {
+                box-shadow: 0 0 60px rgba(255, 140, 0, 0.9);
+            }
+        }
+
+       .header {
+            width: 80%;
+            background: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            margin-top: 20px;
+        }
+
+        
+        .container {
+            display: flex;
+            width: 900px;
+            background: rgba(255, 69, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .left, .right {
+            flex: 1;
+            padding: 40px;
+            position: relative;
+            color: white;
+        }
+        
+        .left img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ff4500;
+            border-radius: 5px;
+            background: rgba(255, 69, 0, 0.2);
+            color: white;
+            font-size: 18px;
+        }
+        
+        .button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(to right, #ff4500, #ff8c00);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 69, 0, 0.9);
+            animation: flicker 0.2s infinite alternate;
+        }
+        
+        .button:hover {
+            background: linear-gradient(to right, #ff8c00, #ff4500);
+        }
+        
+        .links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .links a {
+            color: #ff8c00;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header fire-border">
+        <h1>NickAzula</h1>
+        <p>Reinvents finance</p>
+        <div class="flame"></div>
+    </div>
+    
+    <div class="container fire-border">
+        <div class="left">
+            <img src="image.png" alt="Logo">
+            <div class="flame"></div>
+        </div>
+        <div class="right">
+            <h2>Вход</h2>
+            <input type="text" class="input-field" placeholder="Логин или почта">
+            <input type="password" class="input-field" placeholder="Пароль">
+            <button class="button">Войти</button>
+            <div class="links">
+                <a href="#">Забыли пароль?</a>
+                <a href="#">Регистрация</a>
+            </div>
+            <div class="flame"></div>
+        </div>
+    </div>
+</body>
+</html>

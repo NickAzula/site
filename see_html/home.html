@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NickAzula Main</title>
+  <!-- Подключаем моноширинный шрифт для программного стиля -->
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap" rel="stylesheet">
+  <style>
+    /* Общие стили */
+    body {
+      margin: 0;
+      font-family: 'Roboto Mono', monospace;
+      background-color: #000;
+      color: #fff;
+      overflow: hidden;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+    .fire-text {
+  font-family: 'Cinzel', serif;
+  color: #fff;
+  font-size: 24px;
+  text-transform: uppercase;
+  text-shadow: 0 0 5px #ff4500, 0 0 10px #ff8c00, 0 0 15px #ff4500, 0 0 20px #ff8c00;
+  animation: burnFlicker 1.5s infinite linear;
+}
+
+
+    /* Фиксированная шапка с прозрачностью и эффектом размытия */
+    .header {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 80px;
+      background: rgba(0, 0, 0, 0.5); /* прозрачнее, чтобы текст за ней просвечивал */
+      backdrop-filter: blur(5px);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      box-sizing: border-box;
+      z-index: 1000;
+    }
+    .header .logo {
+      display: flex;
+      align-items: center;
+    }
+    .header .logo img {
+      height: 50px;
+      width: 50px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+    .header .logo span {
+      font-size: 24px;
+      font-weight: bold;
+    }
+    /* Контейнер кнопок в шапке */
+    .header-controls {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+    /* Соцсети – выпадающее меню */
+    .social-container {
+      position: relative;
+    }
+    .social-toggle {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 24px;
+      cursor: pointer;
+      outline: none;
+    }
+    .social-dropdown {
+      display: none;
+      position: absolute;
+      top: 60px;
+      right: 0;
+      background: rgba(0, 0, 0, 0.9);
+      padding: 10px;
+      border-radius: 5px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.5);
+      flex-direction: column;
+    }
+    .social-dropdown a {
+      color: #fff;
+      text-decoration: none;
+      margin: 5px 0;
+      font-size: 18px;
+      position: relative; /* для псевдоэлемента искр */
+      display: inline-block;
+      transition: all 0.3s;
+    }
+    /* Круглые кнопки для управления (тема и дождь) */
+    .circle-button {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      background: linear-gradient(to right, #ff4500, #ff8c00);
+      color: #fff;
+      font-size: 20px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      outline: none;
+      box-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
+      transition: background 0.3s;
+    }
+    .circle-button:hover {
+      background: linear-gradient(to right, #ff8c00, #ff4500);
+    }
+    /* Основной контейнер, разделённый на левый и правый блоки */
+    .main-container {
+  display: flex;
+  flex: 1;
+  /* margin-top: 80px;  Удаляем эту строку */
+  overflow: hidden;
+}
+
+    /* Левый блок – sidebar */
+    .sidebar {
+      width: 250px;
+      background: #111;
+      padding: 80px;
+      box-sizing: border-box;
+      overflow-y: auto;
+    }
+    .sidebar h2 {
+      font-size: 20px;
+      margin-bottom: 10px;
+      color: #ff8c00;
+    }
+    .sidebar ul {
+      list-style: none;
+      padding: 0;
+      margin: 0 0 20px 0;
+    }
+    .sidebar ul li {
+      margin: 10px 0;
+    }
+    .sidebar a {
+      color: #fff;
+      text-decoration: none;
+      font-size: 16px;
+      position: relative;
+      display: inline-block;
+      transition: all 0.3s;
+    }
+    /* Правый блок – основное содержимое */
+    .content {
+  flex: 1;
+  padding: 100px 40px 20px 40px; /* padding-top минимум 80px (можно немного больше для комфорта) */
+  background: #222;
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+    .content p {
+      text-align: justify;
+      line-height: 1.8;
+    }
+    /* Эффект «горящего» наведения с искрами */
+    .fire-hover {
+      position: relative;
+      transition: all 0.3s;
+    }
+    .fire-hover:hover {
+      animation: burnFlicker 1.5s infinite linear;
+      text-shadow: 0 0 5px #ff4500, 0 0 10px #ff8c00, 0 0 15px #ff4500, 0 0 20px #ff8c00;
+    }
+    .fire-hover:hover::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -5px;
+      width: 2px;
+      height: 2px;
+      background: radial-gradient(circle, rgba(255,255,0,1), rgba(255,140,0,0.5));
+      border-radius: 50%;
+      animation: sparks 1s infinite linear;
+      pointer-events: none;
+    }
+    @keyframes burnFlicker {
+      0% {
+        text-shadow:
+          0 0 5px #ff4500,
+          0 0 10px #ff8c00,
+          0 0 15px #ff4500,
+          0 0 20px #ff8c00;
+      }
+      50% {
+        text-shadow:
+          0 0 8px #ff8c00,
+          0 0 16px #ff4500,
+          0 0 25px #ff8c00,
+          0 0 30px #ff4500;
+      }
+      100% {
+        text-shadow:
+          0 0 5px #ff4500,
+          0 0 10px #ff8c00,
+          0 0 15px #ff4500,
+          0 0 20px #ff8c00;
+      }
+    }
+    @keyframes sparks {
+      0% {
+        transform: translateX(-50%) translateY(0) scale(1);
+        opacity: 1;
+      }
+      50% {
+        transform: translateX(-50%) translateY(-40px) scale(0.6);
+        opacity: 0.7;
+      }
+      100% {
+        transform: translateX(-50%) translateY(-80px) scale(0.3);
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Фиксированная шапка -->
+  <header class="header">
+    <div class="logo fire-text">
+      <img src="{{ url_for('static', filename='images/azula.png') }}" alt="Logo">
+      <span>NickAzula</span>
+    </div>
+    <div class="header-controls">
+      <!-- Кнопка для отображения/скрытия соцсетей -->
+      <div class="social-container">
+        <button class="social-toggle" id="socialToggle">☰</button>
+        <div class="social-dropdown" id="socialDropdown">
+          <a href="https://t.me/nick_azula" target="_blank" class="fire-hover">Telegram</a>
+          <a href="https://www.instagram.com/azu_zzula/" target="_blank" class="fire-hover">Instagram</a>
+          <!-- Добавьте другие ссылки при необходимости -->
+        </div>
+      </div>
+      <!-- Кнопка смены темы (иконка: ☀ или 🌙) -->
+      <button class="circle-button" id="themeToggle">☀</button>
+      <!-- Кнопка включения/выключения дождя (иконка: 🌧) -->
+      <button class="circle-button" id="rainToggle">🌧</button>
+    </div>
+  </header>
+
+  <!-- Основной контейнер -->
+  <div class="main-container">
+    <!-- Левый блок (sidebar) -->
+    <nav class="sidebar">
+      <h2>Home</h2>
+      <ul>
+        <li><a href="#" class="fire-hover">Star</a></li>
+        <li><a href="#" class="fire-hover">FAQ</a></li>
+        <li><a href="#" class="fire-hover">AI</a></li>
+        <li><a href="#" class="fire-hover">Python</a></li>
+      </ul>
+      <h2>Trading</h2>
+      <ul>
+        <li><a href="#" class="fire-hover">ML Bots</a></li>
+        <li><a href="#" class="fire-hover">Algorithms</a></li>
+        <li><a href="#" class="fire-hover">Spot Bot</a></li>
+        <li><a href="#" class="fire-hover">HFT</a></li>
+      </ul>
+      <h2>Blockchain</h2>
+      <ul>
+        <li><a href="#" class="fire-hover">ETHER</a></li>
+        <li><a href="#" class="fire-hover">Web3</a></li>
+        <li><a href="#" class="fire-hover">Solidity</a></li>
+      </ul>
+      <h2>About</h2>
+      <ul>
+        <li><a href="#" class="fire-hover">Me</a></li>
+        <li><a href="#" class="fire-hover">Me</a></li>
+        <li><a href="#" class="fire-hover">Me</a></li>
+        <li><a href="#" class="fire-hover">Me</a></li>
+        <li><a href="#" class="fire-hover">Me</a></li>
+      </ul>
+    </nav>
+    <!-- Правый блок (контент) -->
+    <main class="content">
+      <p>
+        Hellow!<br><br>
+        Hardhat (Supported since Remix IDE v0.12.0 and Remixd v0.3.6)<br><br>
+        Remixd and Hardhat<br>
+        Note: If you have not used remixd before, read more about it here<br><br>
+        If remixd is running locally on your device and shared folder is a Hardhat project, an additional websocket plugin will be listening on port 65522. According to its documentation,<br><br>
+        Hardhat projects are npm projects with the hardhat package installed and a hardhat.config.js or hardhat.config.ts file.<br><br>
+        Remixd looks for the hardhat.config.js or hardhat.config.ts file in shared folder, and if it finds the file, the Hardhat websocket listener will run.<br><br>
+        The Hardhat websocket listener is a websocket plugin similar to remixd and is used to perform Hardhat specific actions with Remix IDE.<br><br>
+        It doesn’t need any separate installation as it is shipped with remixd NPM module.<br><br>
+        Enable Hardhat Compilation<br>
+        Prerequisites<br>
+        To use Hardhat compilation with Remix IDE efficiently:<br><br>
+        Hardhat should be installed locally on the system https://hardhat.org/getting-started/#installation<br><br>
+        Shared folder should be a Hardhat project containing hardhat.config.js or hardhat.config.ts<br><br>
+        Remixd Hardhat websocket listener should be running at 65522.
+      </p>
+    </main>
+  </div>
+
+  <!-- Скрипты -->
+  <script>
+    // Выпадающее меню соцсетей
+    const socialToggle = document.getElementById('socialToggle');
+    const socialDropdown = document.getElementById('socialDropdown');
+    socialToggle.addEventListener('click', () => {
+      if (socialDropdown.style.display === 'flex') {
+        socialDropdown.style.display = 'none';
+      } else {
+        socialDropdown.style.display = 'flex';
+        socialDropdown.style.flexDirection = 'column';
+      }
+    });
+
+    // Переключение темы с использованием булевой переменной
+    const themeToggle = document.getElementById('themeToggle');
+    let isDark = true; // изначально тёмная тема (фон #222, цвет #fff)
+    themeToggle.addEventListener('click', () => {
+      const content = document.querySelector('.content');
+      if(isDark) {
+        content.style.background = '#eee';
+        content.style.color = '#000';
+        themeToggle.textContent = '🌙';
+        isDark = false;
+      } else {
+        content.style.background = '#222';
+        content.style.color = '#fff';
+        themeToggle.textContent = '☀';
+        isDark = true;
+      }
+    });
+
+    // Реализация эффекта дождя
+    class RainEffect {
+      constructor() {
+        this.isRaining = false;
+        this.drops = [];
+        this.canvas = document.createElement("canvas");
+        this.ctx = this.canvas.getContext("2d");
+        this.init();
+      }
+      init() {
+        this.canvas.style.position = "fixed";
+        this.canvas.style.top = "0";
+        this.canvas.style.left = "0";
+        this.canvas.style.width = "100vw";
+        this.canvas.style.height = "100vh";
+        this.canvas.style.pointerEvents = "none";
+        this.canvas.style.zIndex = "500";
+        document.body.appendChild(this.canvas);
+        this.resize();
+        window.addEventListener("resize", () => this.resize());
+      }
+      resize() {
+        this.canvas.width = window.innerWidth;
+        this.canvas.height = window.innerHeight;
+        this.drops = [];
+        for (let i = 0; i < 250; i++) {
+          this.drops.push({
+            x: Math.random() * this.canvas.width,
+            y: Math.random() * this.canvas.height,
+            vx: 0.5 - Math.random(),
+            vy: Math.random() + 0.2,
+            life: 0,
+            ttl: Math.random() * 500 + 300,
+            size: 2
+          });
+        }
+      }
+      draw() {
+        if (!this.isRaining) return;
+        this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        this.ctx.fillStyle = "rgba(150,180,255,0.8)";
+        for (let drop of this.drops) {
+          drop.x += drop.vx;
+          drop.y += drop.vy;
+          drop.life++;
+          if (drop.vy < 8) {
+            drop.vy += 0.1;
+          }
+          if (
+            drop.x > this.canvas.width ||
+            drop.x < -drop.size ||
+            drop.y > this.canvas.height + drop.size ||
+            drop.life > drop.ttl
+          ) {
+            drop.x = Math.random() * this.canvas.width;
+            drop.y = -drop.size;
+            drop.vx = 0.5 - Math.random();
+            drop.vy = Math.random() + 0.2;
+            drop.life = 0;
+            drop.ttl = Math.random() * 500 + 300;
+          }
+          this.ctx.fillRect(drop.x, drop.y, drop.size, drop.size);
+        }
+        requestAnimationFrame(() => this.draw());
+      }
+      toggleRain() {
+        this.isRaining = !this.isRaining;
+        if (this.isRaining) {
+          requestAnimationFrame(() => this.draw());
+        } else {
+          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+        }
+      }
+    }
+    const rainEffect = new RainEffect();
+    const rainToggle = document.getElementById('rainToggle');
+    rainToggle.addEventListener('click', () => {
+      rainEffect.toggleRain();
+    });
+  </script>
+</body>
+</html>

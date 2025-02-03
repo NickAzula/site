@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NickAzula Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Fenwick+Outline&display=swap');
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: rgba(10,10,10,0.5);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 0;
+        }
+        .header {
+            width: 80%;
+            background: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .container {
+            display: flex;
+            width: 1000px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            margin-top: 20px;
+            position: relative;
+            z-index: 1;
+        }
+        .left {
+            flex: 1;
+            background: #eee;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+        .left img {
+            max-width: 100%;
+            height: auto;
+        }
+        .right {
+            flex: 1;
+            padding: 80px;
+        }
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            font-family: 'Fenwick Outline', sans-serif;
+            font-size: 18px;
+        }
+        .button {
+            width: 100%;
+            padding: 10px;
+            background: #6c40ff;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .button:hover {
+            background: #5632cc;
+        }
+        .links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        .links a {
+            color: #6c40ff;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="rainCanvas"></canvas>
+    <div class="header">
+        <h1>NickAzula</h1>
+        <p>Reinvents finance</p>
+    </div>
+    <div class="container">
+        <div class="left">
+            <img src="image.png" alt="Logo">
+        </div>
+        <div class="right">
+            <h2>Вход</h2>
+            <input type="text" class="input-field" placeholder="Логин или почта">
+            <input type="password" class="input-field" placeholder="Пароль">
+            <button class="button">Войти</button>
+            <div class="links">
+                <a href="#">Забыли пароль?</a>
+                <a href="#">Регистрация</a>
+            </div>
+        </div>
+    </div>
+    <script>
+        var canvas = document.getElementById('rainCanvas');
+        var ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+        var rainDrops = [];
+        
+        function RainDrop() {
+            this.x = Math.random() * canvas.width;
+            this.y = Math.random() * canvas.height;
+            this.speedY = Math.random() * 4 + 2;
+            this.length = Math.random() * 10 + 5;
+        }
+        
+        RainDrop.prototype.fall = function() {
+            this.y += this.speedY;
+            if (this.y > canvas.height) {
+                this.y = -this.length;
+                this.x = Math.random() * canvas.width;
+            }
+        };
+        
+        function createRain() {
+            for (var i = 0; i < 500; i++) {
+                rainDrops.push(new RainDrop());
+            }
+        }
+        
+        function drawRain() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = 'rgba(150,180,255,0.8)';
+            for (var i = 0; i < rainDrops.length; i++) {
+                var drop = rainDrops[i];
+                ctx.fillRect(drop.x, drop.y, 2, drop.length);
+                drop.fall();
+            }
+            requestAnimationFrame(drawRain);
+        }
+        
+        createRain();
+        drawRain();
+    </script>
+</body>
+</html>

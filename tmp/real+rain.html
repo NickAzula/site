@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NickAzula Login</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+        
+        /* Стили страницы */
+        body {
+            font-family: 'Cinzel', serif;
+            background-color: black;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        /* Кнопки управления вверху справа */
+        .top-controls {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            z-index: 2; /* Выше canvas дождя (z-index:0) и контента (z-index:1) */
+            display: flex;
+            flex-direction: column; /* Вертикальное расположение */
+            gap: 10px;
+        }
+        .top-controls button {
+            padding: 10px;
+            background: linear-gradient(to right, #ff4500, #ff8c00);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: bold;
+            text-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
+            animation: flicker 0.2s infinite alternate;
+        }
+        .top-controls button:hover {
+            background: linear-gradient(to right, #ff8c00, #ff4500);
+        }
+
+        /* Эффект пламени (flame) */
+        .flame {
+            position: absolute;
+            width: 120%;
+            height: 40px;
+            background: linear-gradient(orange, red);
+            filter: blur(8px);
+            opacity: 0.7;
+            bottom: -15px;
+            left: -10%;
+            animation: flameEffect 1s infinite alternate ease-in-out;
+        }
+        @keyframes flameEffect {
+            0% {
+                transform: scaleY(1);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scaleY(1.3);
+                opacity: 0.5;
+            }
+        }
+        
+        /* Огонь по краям */
+        .fire-border {
+            position: relative;
+            padding: 20px;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 0 30px rgba(255, 69, 0, 0.8);
+            animation: flicker 0.1s infinite alternate;
+        }
+        
+        @keyframes flicker {
+            0% {
+                box-shadow: 0 0 40px rgba(255, 69, 0, 0.9);
+            }
+            100% {
+                box-shadow: 0 0 60px rgba(255, 140, 0, 0.9);
+            }
+        }
+
+        .header {
+            width: 80%;
+            background: white;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            margin-top: 20px;
+            z-index: 1;
+            position: relative;
+        }
+
+        .container {
+            display: flex;
+            width: 900px;
+            background: rgba(255, 69, 0, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+            position: relative;
+            z-index: 1; /* Выше canvas дождя */
+        }
+        
+        .left, .right {
+            flex: 1;
+            padding: 40px;
+            position: relative;
+            color: white;
+        }
+        
+        .left img {
+            max-width: 100%;
+            height: auto;
+        }
+        
+        /* Обертка для инпута пароля + иконка "глаз" */
+        .password-field {
+            position: relative;
+            margin: 10px 0;
+        }
+        .password-field .toggle-pass {
+            position: absolute;
+            top: 50%;
+            right: 10px;
+            transform: translateY(-50%);
+            cursor: pointer;
+            font-size: 20px;
+            color: #ff8c00;
+        }
+
+        .input-field {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ff4500;
+            border-radius: 5px;
+            background: rgba(255, 69, 0, 0.2);
+            color: white;
+            font-size: 18px;
+        }
+        
+        .button {
+            width: 100%;
+            padding: 10px;
+            background: linear-gradient(to right, #ff4500, #ff8c00);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 18px;
+            font-weight: bold;
+            text-shadow: 0 0 10px rgba(255, 69, 0, 0.9);
+            animation: flicker 0.2s infinite alternate;
+        }
+        
+        .button:hover {
+            background: linear-gradient(to right, #ff8c00, #ff4500);
+        }
+        
+        .links {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+            font-size: 14px;
+        }
+        
+        .links a {
+            color: #ff8c00;
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Кнопки управления (дождь и язык) вверху справа -->
+    <div class="top-controls">
+        <!-- Сначала кнопка языка, затем – дождя -->
+        <button id="langToggle">ENG</button>
+        <button id="rainToggle">Rain ON</button>
+    </div>
+
+    <div class="header fire-border">
+        <h1 id="pageTitle">NickAzula</h1>
+        <p id="pageSubtitle">Reinvents finance</p>
+        <div class="flame"></div>
+    </div>
+    
+    <div class="container fire-border">
+        <div class="left">
+            <img src="image.png" alt="Logo">
+            <div class="flame"></div>
+        </div>
+        <div class="right">
+            <h2 id="loginTitle">Вход</h2>
+            
+            <input type="text" class="input-field" id="usernameField" placeholder="Логин или почта">
+            
+            <!-- Поле пароля + иконка глаз -->
+            <div class="password-field">
+                <input type="password" class="input-field" id="passwordField" placeholder="Пароль">
+                <span class="toggle-pass" id="togglePass">👁️</span>
+            </div>
+            
+            <button class="button" id="signInBtn">Войти</button>
+            
+            <div class="links">
+                <a href="#" id="forgotLink">Забыли пароль?</a>
+                <a href="#" id="registerLink">Регистрация</a>
+            </div>
+            <div class="flame"></div>
+        </div>
+    </div>
+
+    <!-- Скрипт дождя -->
+    <script type="text/javascript">
+    ;(function(window, document) {
+        var Vector2 = (function() {
+            function Vector2(x, y) {
+                this.x = x || 0;
+                this.y = y || 0;
+            }
+            return Vector2;
+        })();
+        Vector2.prototype.add = function(addend) {
+            this.x += addend.x;
+            this.y += addend.y;
+        };
+
+        var RainDrop = (function() {
+            function RainDrop(parent) {
+                this.size = 2;
+                this.parent = parent;
+                this.init();
+            }
+            return RainDrop;
+        })();
+
+        RainDrop.prototype.init = function() {
+            this.life = 0;
+            this.ttl = Math.random() * 500 + 300;
+            this.position = new Vector2(Math.random() * window.innerWidth, 0);
+            this.velocity = new Vector2(0.5 - Math.random() * 1, Math.random() * 1 + 0.2);
+            this.terminalVelocity = 8;
+        };
+        RainDrop.prototype.update = function() {
+            if (this.position.x > window.innerWidth || this.position.x < -this.size || this.life > this.ttl) {
+                this.init();
+            }
+            if (this.position.y > this.parent.floor) {
+                this.position.y = this.parent.floor - this.size;
+                this.velocity.y *= -0.2 - Math.random() * 0.2;
+            }
+            this.life++;
+            this.position.add(this.velocity);
+            this.velocity.y += 0.1;
+        };
+
+        var Rain = (function() {
+            function Rain(args) {
+                this.props = args;
+                // Изначально дождь выключен
+                this.isRaining = false;
+                this.rainDrops = [];
+                this.init();
+            }
+            return Rain;
+        })();
+
+        Rain.prototype.init = function() {
+            this.createCanvas();
+            this.resize();
+            // Запуск анимации — но внутри loop есть проверка, идёт дождь или нет
+            this.loop();
+        };
+
+        // Метод переключения дождя
+        Rain.prototype.toggle = function() {
+            // Если дождь включен, выключаем его и удаляем канвас
+            if (this.isRaining) {
+                this.isRaining = false;
+                // Удаляем канвас из документа, чтобы пропал эффект
+                if (this.canvas.parentNode) {
+                    this.canvas.parentNode.removeChild(this.canvas);
+                }
+            } else {
+                // Если дождь выключен, включаем его снова и возвращаем канвас
+                this.isRaining = true;
+                document.body.appendChild(this.canvas);
+                this.loop();
+            }
+        };
+
+        Rain.prototype.resize = function() {
+            var attr = 'position: absolute; z-index: 0; top: 0; left: 0; height: 100vh; width: 100vw;';
+            this.canvas.setAttribute('style', attr);
+            this.dimensions = {
+                width: window.innerWidth,
+                height: window.innerHeight
+            };
+            this.canvas.width = this.dimensions.width;
+            this.canvas.height = this.dimensions.height;
+            this.floor = this.dimensions.height * 0.7;
+        };
+
+        Rain.prototype.createCanvas = function() {
+            this.canvas = document.createElement('canvas');
+            this.ctx = this.canvas.getContext('2d');
+            document.body.appendChild(this.canvas);
+        };
+
+        Rain.prototype.draw = function() {
+            // Фон (полностью чёрный)
+            this.ctx.fillStyle = this.props.backgroundColor;
+            this.ctx.fillRect(0, 0, this.dimensions.width, this.floor);
+
+            // Капли дождя
+            for (var i = 0, len = this.rainDrops.length; i < len; i++) {
+                var rainDrop = this.rainDrops[i];
+                rainDrop.update();
+                this.ctx.fillStyle = this.props.rainColor;
+                this.ctx.fillRect(rainDrop.position.x, rainDrop.position.y, rainDrop.size, rainDrop.size);
+            }
+
+            // Отражение/блик снизу (если нужно)
+            this.reflect();
+        };
+
+        Rain.prototype.reflect = function() {
+            var grad = this.ctx.createLinearGradient(
+                this.dimensions.width / 2,
+                this.floor * 0.6,
+                this.dimensions.width / 2,
+                this.floor
+            );
+            grad.addColorStop(0, 'rgba(20,30,40,1)');
+            grad.addColorStop(1, 'rgba(20,30,40,0)');
+            this.ctx.save();
+            this.ctx.scale(1, -1);
+            this.ctx.translate(0, this.floor * -2);
+            this.ctx.filter = 'blur(2px) saturate(150%)';
+            this.ctx.drawImage(
+                this.canvas,
+                0,
+                0,
+                this.dimensions.width,
+                this.floor,
+                0,
+                0,
+                this.dimensions.width,
+                this.floor
+            );
+            this.ctx.fillStyle = grad;
+            this.ctx.fillRect(0, 0, this.dimensions.width, this.floor);
+            this.ctx.restore();
+        };
+
+        Rain.prototype.loop = function() {
+            // Если дождь отключён, выходим из анимации (рекурсия прерывается)
+            if (!this.isRaining) return;
+
+            var self = this;
+
+            // Добавляем капли, пока не достигнем нужного количества
+            if (self.rainDrops.length < self.props.rainDropCount) {
+                setTimeout(function() {
+                    self.rainDrops.push(new RainDrop(self));
+                }, Math.random() * 200);
+            }
+            
+            self.draw();
+            self.animationId = window.requestAnimationFrame(self.loop.bind(self));
+        };
+
+        // Делаем переменную rainInstance доступной снаружи
+        window.rainInstance = null;
+
+        // Запуск
+        window.onload = function() {
+            var args = {
+                rainDropCount: 500,
+                rainColor: 'rgba(150,180,255,0.8)',
+                // Фон дождя полностью чёрный (непрозрачный)
+                backgroundColor: 'rgba(0,0,0,1)'
+            };
+            window.rainInstance = new Rain(args);
+
+            window.onresize = function() {
+                window.rainInstance.resize();
+            };
+        };
+
+        // Полифилл requestAnimationFrame
+        window.requestAnimationFrame = (function() {
+            return window.requestAnimationFrame ||
+                window.webkitRequestAnimationFrame ||
+                window.mozRequestAnimationFrame ||
+                window.oRequestAnimationFrame ||
+                window.msRequestAnimationFrame ||
+                function(callback) {
+                    window.setTimeout(callback, 1000 / 60);
+                };
+        })();
+    })(this, document);
+    </script>
+
+    <!-- Скрипт с переключением языка и паролем-глазом -->
+    <script>
+    // Словарь для переключения языка
+    const translations = {
+      ru: {
+        pageTitle: "NickAzula",
+        pageSubtitle: "Reinvents finance",
+        loginTitle: "Вход",
+        usernamePlaceholder: "Логин или почта",
+        passwordPlaceholder: "Пароль",
+        signInButton: "Войти",
+        forgotLink: "Забыли пароль?",
+        registerLink: "Регистрация"
+      },
+      en: {
+        pageTitle: "NickAzula",
+        pageSubtitle: "Reinvents finance",
+        loginTitle: "Login",
+        usernamePlaceholder: "Username or Email",
+        passwordPlaceholder: "Password",
+        signInButton: "Sign In",
+        forgotLink: "Forgot password?",
+        registerLink: "Sign Up"
+      }
+    };
+
+    let currentLang = "ru"; // Текущий язык
+
+    // Функция смены языка
+    function setLanguage(lang) {
+      currentLang = lang;
+
+      // Берём элементы со страницы
+      const pageTitleElem = document.getElementById("pageTitle");
+      const pageSubtitleElem = document.getElementById("pageSubtitle");
+      const loginTitleElem = document.getElementById("loginTitle");
+      const usernameField = document.getElementById("usernameField");
+      const passwordField = document.getElementById("passwordField");
+      const signInBtn = document.getElementById("signInBtn");
+      const forgotLink = document.getElementById("forgotLink");
+      const registerLink = document.getElementById("registerLink");
+
+      // Переводим
+      pageTitleElem.textContent = translations[lang].pageTitle;
+      pageSubtitleElem.textContent = translations[lang].pageSubtitle;
+      loginTitleElem.textContent = translations[lang].loginTitle;
+      usernameField.placeholder = translations[lang].usernamePlaceholder;
+      passwordField.placeholder = translations[lang].passwordPlaceholder;
+      signInBtn.textContent = translations[lang].signInButton;
+      forgotLink.textContent = translations[lang].forgotLink;
+      registerLink.textContent = translations[lang].registerLink;
+
+      // --- Меняем шрифт и делаем жирным только у нужных элементов на русском ---
+      if (lang === "ru") {
+        forgotLink.style.fontFamily = "Arial Black, sans-serif";
+        forgotLink.style.fontWeight = "bold";
+
+        registerLink.style.fontFamily = "Arial Black, sans-serif";
+        registerLink.style.fontWeight = "bold";
+      } else {
+        // Возвращаем исходный (пусть наследуется от body)
+        forgotLink.style.fontFamily = "";
+        forgotLink.style.fontWeight = "";
+
+        registerLink.style.fontFamily = "";
+        registerLink.style.fontWeight = "";
+      }
+    }
+
+    // При загрузке страницы убеждаемся, что выбранный язык применяется
+    document.addEventListener("DOMContentLoaded", function() {
+      // Ставим изначальный язык (ru)
+      setLanguage(currentLang);
+
+      // Обработчик кнопки переключения языка
+      const langToggleBtn = document.getElementById("langToggle");
+      langToggleBtn.addEventListener("click", function() {
+        // Если сейчас ru, переключаем на en, и наоборот
+        if (currentLang === "ru") {
+          setLanguage("en");
+          this.textContent = "RU";
+        } else {
+          setLanguage("ru");
+          this.textContent = "ENG";
+        }
+      });
+
+      // Обработчик кнопки переключения дождя
+      const rainToggleBtn = document.getElementById("rainToggle");
+      rainToggleBtn.addEventListener("click", function() {
+        if (window.rainInstance) {
+          window.rainInstance.toggle();
+          // Меняем надпись на кнопке в зависимости от флага
+          if (window.rainInstance.isRaining) {
+            this.textContent = "Rain OFF";
+          } else {
+            this.textContent = "Rain ON";
+          }
+        }
+      });
+
+      // Показ/скрытие пароля
+      const togglePassIcon = document.getElementById("togglePass");
+      togglePassIcon.addEventListener("click", function() {
+        const passField = document.getElementById("passwordField");
+        if (passField.type === "password") {
+          passField.type = "text";
+        } else {
+          passField.type = "password";
+        }
+      });
+    });
+    </script>
+
+</body>
+</html>

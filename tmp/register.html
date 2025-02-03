@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>NickAzula Registration</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@700&display=swap');
+
+    body {
+      font-family: 'Cinzel', serif;
+      background-color: black;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      height: 100vh;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* Кнопки управления вверху справа */
+    .top-controls {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 999;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .top-controls button {
+      padding: 10px;
+      background: linear-gradient(to right, #ff4500, #ff8c00);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: bold;
+      text-shadow: 0 0 5px rgba(255, 69, 0, 0.7);
+      animation: flicker 0.2s infinite alternate;
+    }
+    .top-controls button:hover {
+      background: linear-gradient(to right, #ff8c00, #ff4500);
+    }
+
+    @keyframes flicker {
+      0% { box-shadow: 0 0 40px rgba(255, 69, 0, 0.9); }
+      100% { box-shadow: 0 0 60px rgba(255, 140, 0, 0.9); }
+    }
+
+    /* Контейнер */
+    .container {
+      display: flex;
+      width: 900px;
+      background: rgba(255, 69, 0, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .left, .right {
+      flex: 1;
+      padding: 40px;
+      color: white;
+    }
+    .left {
+      border-right: 1px solid #d67c0f;
+    }
+
+    /* Поля для ввода */
+    .input-field {
+      width: 100%;
+      padding: 10px;
+      margin: 10px 0;
+      border: 1px solid #ff4500;
+      border-radius: 5px;
+      background: rgba(255, 69, 0, 0.2);
+      color: white;
+      font-size: 18px;
+    }
+
+    .password-field {
+      position: relative;
+      margin: 10px 0;
+    }
+    .password-field .toggle-pass {
+      position: absolute;
+      top: 50%;
+      right: 10px;
+      transform: translateY(-50%);
+      cursor: pointer;
+      font-size: 20px;
+      color: #ff8c00;
+    }
+
+    .button {
+      width: 100%;
+      padding: 10px;
+      background: linear-gradient(to right, #ff4500, #ff8c00);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 18px;
+      font-weight: bold;
+      text-shadow: 0 0 10px rgba(255, 69, 0, 0.9);
+      animation: flicker 0.2s infinite alternate;
+    }
+    .button:hover {
+      background: linear-gradient(to right, #ff8c00, #ff4500);
+    }
+
+    /* Заголовок */
+    #registerTitle {
+      color: #fff;
+      font-size: 28px;
+      text-transform: uppercase;
+      text-shadow: 0 0 5px #ff4500, 0 0 10px #ff8c00;
+      animation: flicker 1.5s infinite linear;
+    }
+
+  </style>
+</head>
+<body>
+
+  <!-- Кнопки управления -->
+  <div class="top-controls">
+    <button id="langToggle">ENG</button>
+    <button id="rainToggle">Rain ON</button>
+  </div>
+
+  <div class="container">
+    <div class="left">
+      <div class="fire-image-wrapper">
+        <img src="{{ url_for('static', filename='images/azula.png') }}" alt="Logo">
+      </div>
+    </div>
+    <div class="right">
+      <h2 id="registerTitle">Регистрация</h2>
+
+      <input type="text" class="input-field" id="usernameField" placeholder="Логин или почта"/>
+
+      <!-- Поле пароля -->
+      <div class="password-field">
+        <input type="password" class="input-field" id="passwordField" placeholder="Пароль"/>
+        <span class="toggle-pass" id="togglePass">👁️</span>
+      </div>
+
+      <!-- Поле подтверждения пароля -->
+      <div class="password-field">
+        <input type="password" class="input-field" id="confirmPasswordField" placeholder="Подтвердите пароль"/>
+        <span class="toggle-pass" id="toggleConfirmPass">👁️</span>
+      </div>
+
+      <button class="button" id="registerBtn">Зарегистрироваться</button>
+
+      <div class="links">
+        <a href="login.html">Уже есть аккаунт? Войти</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Показ/скрытие пароля
+    document.getElementById("togglePass").addEventListener("click", function() {
+      const passField = document.getElementById("passwordField");
+      passField.type = passField.type === "password" ? "text" : "password";
+    });
+
+    document.getElementById("toggleConfirmPass").addEventListener("click", function() {
+      const confirmPassField = document.getElementById("confirmPasswordField");
+      confirmPassField.type = confirmPassField.type === "password" ? "text" : "password";
+    });
+
+    // Обработчик регистрации
+    document.getElementById("registerBtn").addEventListener("click", async function() {
+      const username = document.getElementById("usernameField").value;
+      const password = document.getElementById("passwordField").value;
+      const confirmPassword = document.getElementById("confirmPasswordField").value;
+
+      if (!username || !password || !confirmPassword) {
+        alert("Пожалуйста, заполните все поля.");
+        return;
+      }
+
+      if (password !== confirmPassword) {
+        alert("Пароли не совпадают!");
+        return;
+      }
+
+      const response = await fetch("/register", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password })
+      });
+
+      const data = await response.json();
+      alert(data.message);
+
+      if (response.ok) {
+        window.location.href = "/login.html";
+      }
+    });
+  </script>
+
+</body>
+</html>
